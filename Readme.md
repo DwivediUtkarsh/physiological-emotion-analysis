@@ -175,10 +175,9 @@ surja/
 │   │       └── videos.ts         # Video metadata
 │   └── annotations-backend/      # FastAPI for manual annotations
 │
-├── model/                        # ML models
-│   ├── lstm_HH.h5, lstm_HL.h5, lstm_LH.h5, lstm_LL.h5
-│   ├── kmeans_model.pkl
-│   └── scaler.pkl
+├── 3_pwindow_lstm_model0.h5      # LSTM model for user cluster 0
+├── 3_pwindow_lstm_model1.h5      # LSTM model for user cluster 1
+├── model/                        # Archived/backup models
 │
 ├── signals.py                    # Signal collection script
 ├── main.py                       # Main orchestrator & file watcher
@@ -259,8 +258,9 @@ interface VideoPlayerProps {
 
 ### model_prediction.py
 **Purpose:** Emotion prediction
-- K-means clustering (3 clusters) for user profiling
-- LSTM models (4 separate) for each emotion category
+- Uses pre-computed user clusters (2 clusters with hardcoded centroids)
+- Loads LSTM model based on user's cluster assignment (0 or 1)
+- Each LSTM model predicts 4 emotion classes (HH, HL, LH, LL)
 - Prediction stored in MongoDB with dual storage:
   - `predictions` collection (permanent)
   - `active_predictions` collection (TTL: 1 hour)
@@ -303,22 +303,33 @@ Raw Signals → Windowing (5s) → Change Detection → Feature Extraction → M
 1. **Data Windowing:** 5-second windows
 2. **Change Point Detection (RuLSIF):** Detect sudden physiological changes
 3. **Feature Extraction:** `gsr_diff`, `hr_diff` from baseline
-4. **K-means Clustering:** Assign user to 1 of 3 clusters
-5. **LSTM Prediction:** Run 4 LSTM models, select highest probability
+4. **User Cluster Assignment:** Match user to nearest of 2 pre-defined cluster centroids
+5. **LSTM Prediction:** Load cluster-specific model, predict emotion class (HH/HL/LH/LL)
 
-### LSTM Architecture
-```
-Input → LSTM(64 units) → Dropout(0.2) → Dense(1, sigmoid)
+### How Prediction Works
+```python
+# 1. User profile is matched to nearest cluster (0 or 1)
+nearest_centroid_index = nearest_cluster_allocation(user_vector)
+
+# 2. Load the LSTM model for that cluster
+loaded_model = load_model(f"3_pwindow_lstm_model{nearest_centroid_index}.h5")
+
+# 3. Model outputs probabilities for 4 classes
+y_preds = loaded_model.predict(features)
+
+# 4. Select class with highest probability
+y_pred_class = np.argmax(y_preds)  # Returns 0, 1, 2, or 3
+labels = ["HH", "HL", "LH", "LL"]
+prediction = labels[y_pred_class]
 ```
 
 ### Model Files
 ```
-model/lstm_HH.h5  → Happy prediction
-model/lstm_HL.h5  → Neutral prediction
-model/lstm_LH.h5  → Angry prediction
-model/lstm_LL.h5  → Sad prediction
-model/kmeans_model.pkl → User clustering
-model/scaler.pkl → Feature scaling
+3_pwindow_lstm_model0.h5  → LSTM for user cluster 0
+3_pwindow_lstm_model1.h5  → LSTM for user cluster 1
+
+# Cluster centroids are hardcoded in profile_cluster_creation.py
+# (No external .pkl files needed)
 ```
 
 ---
@@ -420,7 +431,7 @@ video_durations = {
     1: 180000,  # 3 minutes
     2: 151000,  # 2:31
     3: 160000,  # 2:40
-    4: 115000   # 1:55
+    4: 117000   # 1:57
 }
 ```
 

@@ -134,13 +134,9 @@ backend/
 │   ├── API_DOCUMENTATION.md     # API documentation
 │   └── README.md                # API quick start
 │
-├── model/                       # ML models & artifacts
-│   ├── lstm_HH.h5              # LSTM model for HH
-│   ├── lstm_HL.h5              # LSTM model for HL
-│   ├── lstm_LH.h5              # LSTM model for LH
-│   ├── lstm_LL.h5              # LSTM model for LL
-│   ├── kmeans_model.pkl        # K-means clustering model
-│   └── scaler.pkl              # Feature scaler
+├── 3_pwindow_lstm_model0.h5    # LSTM model for user cluster 0
+├── 3_pwindow_lstm_model1.h5    # LSTM model for user cluster 1
+├── model/                       # Archived/backup models
 │
 ├── scripts/
 │   ├── migrate_test_data.py    # Populate test data
@@ -316,8 +312,8 @@ video_valence_arousal = {
 **Purpose:** Emotion prediction using K-means clustering + LSTM models.
 
 **ML Models:**
-1. **K-means Clustering** - User profiling (3 clusters)
-2. **LSTM Models** - Four separate models for each emotion category
+1. **User Clustering** - User profiling (2 pre-defined clusters)
+2. **LSTM Models** - Two models (one per user cluster), each predicting 4 emotion classes
 
 **Key Functions:**
 ```python
@@ -335,10 +331,8 @@ def get_model_prediction(test, nearest_centroid_index, starttime, v_no, user_id,
 
 **LSTM Model Files:**
 ```
-model/lstm_HH.h5  → Predicts Happy emotion
-model/lstm_HL.h5  → Predicts Neutral emotion
-model/lstm_LH.h5  → Predicts Angry emotion
-model/lstm_LL.h5  → Predicts Sad emotion
+3_pwindow_lstm_model0.h5  → LSTM for user cluster 0 (predicts all 4 emotions)
+3_pwindow_lstm_model1.h5  → LSTM for user cluster 1 (predicts all 4 emotions)
 ```
 
 **Emotion Labels:**
@@ -509,19 +503,22 @@ window_size = 10  # Samples for comparison
 - `valence` - Emotional valence (0 or 1)
 - `arousal` - Emotional arousal (0 or 1)
 
-### **4. K-means Clustering**
+### **4. User Cluster Assignment**
 
 **Purpose:** User profiling based on physiological responses
 
-**Model:** `model/kmeans_model.pkl`
+**Implementation:** Hardcoded centroids in `profile_cluster_creation.py`
 
 **Parameters:**
 ```python
-n_clusters = 3
-features = ['gsr_diff', 'hr_diff']
+# 2 pre-defined cluster centroids (8-dimensional vectors)
+cluster_centroid = np.array([
+    [0.132, 0.116, 0.124, 0.104, 0.135, 0.129, 0.136, 0.120],  # Cluster 0
+    [0.325, 0.219, 0.364, 0.228, 0.352, 0.215, 0.313, 0.206]   # Cluster 1
+])
 ```
 
-**Output:** Cluster ID (0, 1, or 2)
+**Output:** Cluster ID (0 or 1)
 
 ### **5. LSTM Prediction**
 
@@ -530,7 +527,7 @@ features = ['gsr_diff', 'hr_diff']
 Input Layer → LSTM(64 units) → Dropout(0.2) → Dense(1, sigmoid)
 ```
 
-**Models:** 4 separate LSTM models (one per emotion)
+**Models:** 2 LSTM models (one per user cluster), each outputs 4 emotion classes
 
 **Input Shape:** `(sequence_length, n_features)`
 
@@ -538,22 +535,19 @@ Input Layer → LSTM(64 units) → Dropout(0.2) → Dense(1, sigmoid)
 
 **Prediction Logic:**
 ```python
-# Load all 4 models
-models = {
-    'HH': load_model('model/lstm_HH.h5'),
-    'HL': load_model('model/lstm_HL.h5'),
-    'LH': load_model('model/lstm_LH.h5'),
-    'LL': load_model('model/lstm_LL.h5')
-}
+# Load model based on user's cluster assignment
+loaded_model = load_model(f"3_pwindow_lstm_model{nearest_centroid_index}.h5",
+                          custom_objects={'PReLU': PReLU})
 
-# Predict with each model
-predictions = {
-    emotion: model.predict(features)
-    for emotion, model in models.items()
-}
+# Model outputs probabilities for all 4 classes
+y_preds = loaded_model.predict(features)
 
-# Select emotion with highest probability
-predicted_emotion = max(predictions, key=predictions.get)
+# Select class with highest probability
+y_pred_class = np.argmax(y_preds, axis=1)
+
+# Map to emotion labels
+labels = ["HH", "HL", "LH", "LL"]
+predicted_emotion = labels[y_pred_class[0]]
 ```
 
 ---
@@ -729,15 +723,13 @@ video_durations = {
 
 ```python
 # model_prediction.py
-MODEL_DIR = 'model/'
-LSTM_MODELS = {
-    'HH': f'{MODEL_DIR}lstm_HH.h5',
-    'HL': f'{MODEL_DIR}lstm_HL.h5',
-    'LH': f'{MODEL_DIR}lstm_LH.h5',
-    'LL': f'{MODEL_DIR}lstm_LL.h5'
-}
-KMEANS_MODEL = f'{MODEL_DIR}kmeans_model.pkl'
-SCALER = f'{MODEL_DIR}scaler.pkl'
+# Models are loaded based on user cluster assignment
+# nearest_centroid_index is 0 or 1
+loaded_model = load_model(f"3_pwindow_lstm_model{nearest_centroid_index}.h5",
+                          custom_objects={'PReLU': PReLU})
+
+# Note: K-means centroids are hardcoded in profile_cluster_creation.py
+# No external .pkl files are used
 ```
 
 ---
@@ -969,10 +961,10 @@ OSError: Unable to open file (file signature not found)
 ```
 **Solution:**
 ```bash
-# Verify model files exist
-ls -lh model/
+# Verify model files exist in project root
+ls -lh 3_pwindow_lstm_model*.h5
 
-# Should see: lstm_HH.h5, lstm_HL.h5, lstm_LH.h5, lstm_LL.h5, kmeans_model.pkl
+# Should see: 3_pwindow_lstm_model0.h5, 3_pwindow_lstm_model1.h5
 ```
 
 **3. Port Already in Use**
