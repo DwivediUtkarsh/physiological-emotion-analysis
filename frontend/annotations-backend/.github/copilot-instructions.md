@@ -1,0 +1,16 @@
+- [x] Clarify Project Requirements
+  - Python backend for annotation CSV management via REST API (Flask, CORS enabled)
+- [x] Scaffold the Project
+  - Created 'annotations-backend' Python project with Flask, CORS, and CSV storage
+- [ ] Customize the Project
+  - Add endpoints: GET /annotations/<video>, POST /annotations/<video>, PUT /annotations/<video>
+- [ ] Install Required Extensions
+  - No extensions needed
+- [ ] Compile the Project
+  - Ensure Flask app runs and endpoints work
+- [ ] Create and Run Task
+  - Add run task for Flask server
+- [ ] Launch the Project
+  - Launch Flask server for API access
+- [ ] Ensure Documentation is Complete
+  - Update README.md and copilot-instructions.md

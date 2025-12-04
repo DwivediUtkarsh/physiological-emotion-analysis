@@ -1,0 +1,101 @@
+[
+  {
+    "Video-label": "amusing-1",
+    "Video-ID": 1,
+    "Duration (in ms)": 185583.333,
+    "Source (Year)": "Hangover (2009)",
+    "Source--URL": "https://www.imdb.com/title/tt1119646/?ref_=nv_sr_1",
+    "url": "https://www.youtube.com/watch?v=xlrqaAjBwS4",
+    "startTime": "00:00:08",
+    "endTime": "00:03:05",
+    "Notes": null
+  },
+  {
+    "Video-label": "amusing-2",
+    "Video-ID": 2,
+    "Duration (in ms)": 173083.333,
+    "Source (Year)": "When Harry Met Sally (1989)",
+    "Source--URL": "https://www.imdb.com/title/tt0098635/?ref_=nv_sr_1",
+    "url": "https://drive.google.com/file/d/1N2n45R9LLaTg4yMag5-OaWARWbJp_dTE/view?usp=sharing",
+    "startTime": "00:00:00",
+    "endTime": "00:02:52",
+    "Notes": null
+  },
+  {
+    "Video-label": "bluVid",
+    "Video-ID": 11,
+    "Duration (in ms)": 120000,
+    "Source (Year)": "n.a. -- blue screen",
+    "Source--URL": "https://www.youtube.com/watch?v=j5WdDUibqzs&ab_channel=AnotherWorld",
+    "url": "https://www.youtube.com/watch?v=j5WdDUibqzs&ab_channel=AnotherWorld",
+    "startTime": "n.a.",
+    "endTime": "n.a.",
+    "Notes": null
+  },
+  {
+    "Video-label": "boring-1",
+    "Video-ID": 3,
+    "Duration (in ms)": 118666.667,
+    "Source (Year)": "Europe Travel Skills (2013) ",
+    "Source--URL": "https://www.youtube.com/watch?v=qUHLCobRgaE",
+    "url": "https://www.youtube.com/watch?v=qUHLCobRgaE",
+    "startTime": "00:00:00",
+    "endTime": "00:01:58",
+    "Notes": null
+  },
+  {
+    "Video-label": "boring-2",
+    "Video-ID": 4,
+    "Duration (in ms)": 160125,
+    "Source (Year)": "Matcha: The way of Tea (2012)",
+    "Source--URL": "https://www.youtube.com/watch?v=IC8zogRPogQ",
+    "url": "https://www.youtube.com/watch?v=IC8zogRPogQ",
+    "startTime": "00:19:05",
+    "endTime": "00:21:45",
+    "Notes": null
+  },
+  {
+    "Video-label": "endVid",
+    "Video-ID": 12,
+    "Duration (in ms)": 120000,
+    "Source (Year)": "n.a. -- blue screen",
+    "Source--URL": "https://www.youtube.com/watch?v=j5WdDUibqzs&ab_channel=AnotherWorld",
+    "url": "https://www.youtube.com/watch?v=j5WdDUibqzs&ab_channel=AnotherWorld",
+    "startTime": "n.a.",
+    "endTime": "n.a.",
+    "Notes": null
+  },
+  {
+    "Video-label": "relaxed-1",
+    "Video-ID": 5,
+    "Duration (in ms)": 145125,
+    "Source (Year)": "Relaxing Music with Beach (2011)",
+    "Source--URL": "https://www.youtube.com/watch?v=tnHlB8aQp3Y",
+    "url": "https://www.youtube.com/watch?v=tnHlB8aQp3Y",
+    "startTime": "00:00:00",
+    "endTime": "00:02:25",
+    "Notes": null
+  },
+  {
+    "Video-label": "scary-1",
+    "Video-ID": 7,
+    "Duration (in ms)": 197000,
+    "Source (Year)": "Shutter (2004)",
+    "Source--URL": "https://www.imdb.com/title/tt0440803/?ref_=nv_sr_2",
+    "url": "https://www.youtube.com/watch?v=dVbWL51L4Ms",
+    "startTime": "00:02:27 00:05:53",
+    "endTime": "00:04:46 00:06:51",
+    "Notes": "Clip 1 and 2 stitched. Clip 1 --  1st scene.  Clip 2 --  2nd scene."
+  },
+  {
+    "Video-label": "scary-2",
+    "Video-ID": 8,
+    "Duration (in ms)": 143750,
+    "Source (Year)": "Mama (2008)",
+    "Source--URL": "https://www.imdb.com/title/tt1315885/",
+    "url": "https://www.youtube.com/watch?v=WRqS6pBC42w",
+    "startTime": "00:01:02",
+    "endTime": "00:03:26",
+    "Notes": null
+  }
+]
